@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export default function Header({ mode, onChangeMode }: HeaderProps) {
   return (
-    <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 h-12 bg-gray-950/80 backdrop-blur-sm border-b border-white/5">
+    <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 pt-[env(safe-area-inset-top,0px)] h-[calc(3rem+env(safe-area-inset-top,0px))] bg-gray-950/80 backdrop-blur-sm border-b border-white/5">
       <h1 className="text-sm font-semibold tracking-wide">
         <span>💫</span>{' '}
         <span className="text-white/90">JujuDes</span>

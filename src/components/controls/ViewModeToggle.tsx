@@ -4,7 +4,7 @@ export default function ViewModeToggle() {
   const { state, dispatch } = useSimulation();
 
   return (
-    <div className="absolute top-16 right-4 bg-gray-900/90 backdrop-blur-sm rounded-xl p-1 flex shadow-xl border border-white/10">
+    <div className="absolute top-[calc(4rem+env(safe-area-inset-top,0px))] right-4 bg-gray-900/90 backdrop-blur-sm rounded-xl p-1 flex shadow-xl border border-white/10">
       <button
         onClick={() => dispatch({ type: 'SET_MODE_AFFICHAGE', mode: 'compact' })}
         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${

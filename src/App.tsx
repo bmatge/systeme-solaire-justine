@@ -24,7 +24,7 @@ function App() {
       <Header mode={mode} onChangeMode={setMode} />
 
       {miseAJourDispo && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-xl shadow-xl flex items-center gap-3 text-sm animate-pulse">
+        <div className="absolute top-[calc(3.5rem+env(safe-area-inset-top,0px))] left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-xl shadow-xl flex items-center gap-3 text-sm animate-pulse">
           <span>Nouvelle version disponible</span>
           <button
             onClick={appliquerMiseAJour}
@@ -37,7 +37,7 @@ function App() {
 
       {mode === 'exploration' ? (
         <SimulationProvider>
-          <div className="w-full h-full pt-12">
+          <div className="w-full h-full pt-[calc(3rem+env(safe-area-inset-top,0px))]">
             <SolarSystemCanvas />
             <PlanetNav />
             <ViewModeToggle />
@@ -47,7 +47,7 @@ function App() {
           </div>
         </SimulationProvider>
       ) : (
-        <div className="w-full h-full pt-12 overflow-y-auto">
+        <div className="w-full h-full pt-[calc(3rem+env(safe-area-inset-top,0px))] overflow-y-auto">
           {quizState.phase === 'configuration' && (
             <QuizSetup state={quizState} dispatch={quizDispatch} />
           )}

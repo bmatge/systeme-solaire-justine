@@ -314,41 +314,10 @@ export const corpsCelestes: CorpsCeleste[] = [
       "Sa lune Triton est l'un des objets les plus froids du système solaire (-235°C).",
     ],
   },
-  {
-    id: 'pluton',
-    nom: 'Pluton',
-    type: 'planete-naine',
-    parent: 'soleil',
-    orbite: {
-      demiGrandAxe: 39.48,
-      excentricite: 0.249,
-      periodeOrbitale: 90560.0,
-      phaseInitiale: 2.5,
-    },
-    physique: {
-      rayon: 1188.3,
-      masse: '1,303 × 10²² kg',
-      densite: 1.86,
-      gravite: 0.62,
-      temperature: -230,
-    },
-    couleur: '#C2B280',
-    rayonAffichage: 4,
-    description:
-      "Pluton est une planète naine située dans la ceinture de Kuiper. Elle a été considérée comme la 9ème planète jusqu'en 2006.",
-    composition:
-      "Surface de glaces d'azote, méthane et monoxyde de carbone. Noyau rocheux entouré d'un manteau de glace d'eau.",
-    curiosites: [
-      "Pluton a été reclassée comme planète naine en 2006 par l'Union Astronomique Internationale.",
-      "Sa lune Charon fait presque la moitié de sa taille, formant quasiment un système binaire.",
-      "Pluton a un cœur de glace en forme de cœur visible sur sa surface (Tombaugh Regio).",
-      "L'orbite de Pluton est si excentrique qu'elle croise parfois celle de Neptune.",
-    ],
-  },
 ];
 
 export const planetes = corpsCelestes.filter(
-  (c) => c.type === 'planete' || c.type === 'planete-naine'
+  (c) => c.type === 'planete'
 );
 
 export const getCorpsParId = (id: string): CorpsCeleste | undefined =>

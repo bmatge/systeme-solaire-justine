@@ -66,10 +66,10 @@ export default function SolarSystemCanvas() {
 
     const corpsRendus: CorpsRendu[] = [];
 
-    // Draw orbits first
+    // Draw orbits by sampling points along the true elliptical path
     for (const corps of corpsCelestes) {
       if (!corps.orbite) continue;
-      if (corps.type === 'satellite') continue; // skip moon orbits at solar system level
+      if (corps.type === 'satellite') continue;
 
       const parentPos = corps.parent
         ? calculerPositionAbsolue(
@@ -79,31 +79,19 @@ export default function SolarSystemCanvas() {
           )
         : { x: 0, y: 0 };
 
-      const parentScreen = auVersPixels(
-        parentPos.x,
-        parentPos.y,
-        s.modeAffichage,
-        s.zoom,
-        s.centreVue,
-        displayW,
-        displayH
-      );
-
-      // Approximate orbit as circle with semi-major axis
-      const orbitPoint = auVersPixels(
-        parentPos.x + corps.orbite.demiGrandAxe,
-        parentPos.y,
-        s.modeAffichage,
-        s.zoom,
-        s.centreVue,
-        displayW,
-        displayH
-      );
-
-      const orbitRadius = Math.abs(orbitPoint.x - parentScreen.x);
-
+      const { demiGrandAxe, excentricite } = corps.orbite;
+      const steps = 120;
       ctx.beginPath();
-      ctx.arc(parentScreen.x, parentScreen.y, orbitRadius, 0, Math.PI * 2);
+      for (let i = 0; i <= steps; i++) {
+        const theta = (i / steps) * Math.PI * 2;
+        const r = demiGrandAxe * (1 - excentricite * excentricite) / (1 + excentricite * Math.cos(theta));
+        const xAU = parentPos.x + r * Math.cos(theta);
+        const yAU = parentPos.y + r * Math.sin(theta);
+        const pt = auVersPixels(xAU, yAU, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.closePath();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.lineWidth = 1;
       ctx.stroke();

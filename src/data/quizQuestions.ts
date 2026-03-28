@@ -71,9 +71,9 @@ export const questionsQuiz: QuestionQuiz[] = [
   {
     id: 9,
     question: 'Quelle planète est la plus éloignée du Soleil ?',
-    reponses: ['Pluton', 'Saturne', 'Uranus', 'Neptune'],
+    reponses: ['Mars', 'Saturne', 'Uranus', 'Neptune'],
     bonneReponse: 3,
-    explication: 'Neptune est la planète la plus éloignée. Pluton n\'est plus considérée comme une planète depuis 2006.',
+    explication: 'Neptune est la planète la plus éloignée du Soleil, à environ 30 UA.',
     niveau: 'primaire',
   },
   {
@@ -183,15 +183,10 @@ export const questionsQuiz: QuestionQuiz[] = [
   },
   {
     id: 22,
-    question: 'Pourquoi Pluton n\'est-elle plus considérée comme une planète ?',
-    reponses: [
-      'Elle est trop froide',
-      'Elle n\'a pas de lune',
-      'Elle n\'a pas dégagé le voisinage de son orbite',
-      'Elle est trop loin du Soleil',
-    ],
+    question: 'Quelle planète possède la plus courte année (orbite la plus rapide) ?',
+    reponses: ['Vénus', 'Terre', 'Mercure', 'Mars'],
     bonneReponse: 2,
-    explication: 'En 2006, l\'UAI a redéfini le terme « planète ». Pluton ne remplit pas le critère d\'avoir nettoyé son orbite.',
+    explication: 'Mercure fait le tour du Soleil en seulement 88 jours terrestres.',
     niveau: 'college',
   },
   {
@@ -249,7 +244,7 @@ export const questionsQuiz: QuestionQuiz[] = [
   {
     id: 29,
     question: 'Quelle planète a été découverte grâce aux mathématiques avant d\'être observée ?',
-    reponses: ['Uranus', 'Pluton', 'Neptune', 'Mercure'],
+    reponses: ['Uranus', 'Saturne', 'Neptune', 'Mercure'],
     bonneReponse: 2,
     explication: 'Neptune a été prédite par Urbain Le Verrier en 1846, d\'après les perturbations de l\'orbite d\'Uranus.',
     niveau: 'lycee',
@@ -358,23 +353,18 @@ export const questionsQuiz: QuestionQuiz[] = [
   },
   {
     id: 41,
-    question: 'En quelle année Pluton a-t-elle été reclassée comme planète naine ?',
-    reponses: ['2000', '2003', '2006', '2010'],
+    question: 'Quel est le nom de la plus grande lune de Jupiter ?',
+    reponses: ['Europe', 'Callisto', 'Ganymède', 'Io'],
     bonneReponse: 2,
-    explication: 'C\'est en 2006, lors de l\'assemblée de l\'Union Astronomique Internationale à Prague.',
+    explication: 'Ganymède est le plus grand satellite du système solaire, plus grand que la planète Mercure.',
     niveau: 'expert',
   },
   {
     id: 42,
-    question: 'Quelle est la particularité de la surface de Pluton ?',
-    reponses: [
-      'Elle est entièrement liquide',
-      'Elle a un motif en forme de cœur',
-      'Elle est recouverte de volcans',
-      'Elle brille dans le noir',
-    ],
+    question: 'Quelle est la distance approximative de la ceinture d\'astéroïdes par rapport au Soleil ?',
+    reponses: ['0,5 à 1 UA', '2,1 à 3,3 UA', '5 à 10 UA', '10 à 20 UA'],
     bonneReponse: 1,
-    explication: 'Pluton possède Tombaugh Regio, une plaine de glace d\'azote en forme de cœur découverte par New Horizons.',
+    explication: 'La ceinture principale d\'astéroïdes se situe entre Mars et Jupiter, à environ 2,1 à 3,3 UA du Soleil.',
     niveau: 'expert',
   },
   {
@@ -403,10 +393,10 @@ export const questionsQuiz: QuestionQuiz[] = [
   },
   {
     id: 46,
-    question: 'Quelle sonde a été la première à survoler Pluton en 2015 ?',
-    reponses: ['Voyager 2', 'Cassini', 'New Horizons', 'Juno'],
-    bonneReponse: 2,
-    explication: 'New Horizons a survolé Pluton le 14 juillet 2015 après un voyage de 9 ans et demi.',
+    question: 'Quelle sonde a exploré le système de Saturne pendant 13 ans ?',
+    reponses: ['Voyager 2', 'Cassini-Huygens', 'New Horizons', 'Juno'],
+    bonneReponse: 1,
+    explication: 'Cassini-Huygens a orbité Saturne de 2004 à 2017, et le module Huygens s\'est posé sur Titan en 2005.',
     niveau: 'expert',
   },
   {

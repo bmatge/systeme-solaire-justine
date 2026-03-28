@@ -1,11 +1,5 @@
-import type { EtatQuiz, QuizAction, ClasseQuiz } from '../../types';
-import { couleurJoueur } from './QuizSetup';
-
-const classesLabels: Record<ClasseQuiz, string> = {
-  cp: 'CP', ce1: 'CE1', ce2: 'CE2', cm1: 'CM1', cm2: 'CM2',
-  '6eme': '6ème', '5eme': '5ème', '4eme': '4ème', '3eme': '3ème',
-  '2nde': '2nde', '1ere': '1ère', terminale: 'Terminale', expert: 'Expert',
-};
+import type { EtatQuiz, QuizAction } from '../../types';
+import { couleurJoueur, niveauLabel } from './QuizSetup';
 
 interface Props {
   state: EtatQuiz;
@@ -52,7 +46,7 @@ export default function QuizResults({ state, dispatch }: Props) {
               <div className="flex-1">
                 <div className="font-medium">{joueur.nom}</div>
                 <div className="text-xs text-white/40">
-                  {joueur.score}/{maxScore} bonnes réponses · {classesLabels[joueur.classe]}
+                  {joueur.score}/{maxScore} bonnes réponses · {niveauLabel[joueur.niveau]}
                 </div>
               </div>
               {rang === 0 && (

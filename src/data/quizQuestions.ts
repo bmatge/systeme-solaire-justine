@@ -422,16 +422,28 @@ export const questionsQuiz: QuestionQuiz[] = [
   },
 ];
 
-export function melangerQuestions(niveau?: NiveauQuiz): QuestionQuiz[] {
-  // Niveaux cumulatifs : chaque niveau inclut les questions des niveaux précédents
-  const niveauxInclus: Record<NiveauQuiz, NiveauQuiz[]> = {
-    primaire: ['primaire'],
-    college: ['primaire', 'college'],
-    lycee: ['primaire', 'college', 'lycee'],
-    expert: ['primaire', 'college', 'lycee', 'expert'],
-  };
+import type { ClasseQuiz } from '../types';
 
-  const niveaux = niveau ? niveauxInclus[niveau] : ['primaire', 'college', 'lycee', 'expert'];
+// Mapping classe → niveaux de questions inclus
+// Plus la classe est élevée, plus on inclut de niveaux
+const classeVersNiveaux: Record<ClasseQuiz, NiveauQuiz[]> = {
+  cp:        ['primaire'],
+  ce1:       ['primaire'],
+  ce2:       ['primaire'],
+  cm1:       ['primaire'],
+  cm2:       ['primaire', 'college'],
+  '6eme':    ['primaire', 'college'],
+  '5eme':    ['primaire', 'college'],
+  '4eme':    ['college', 'lycee'],
+  '3eme':    ['college', 'lycee'],
+  '2nde':    ['college', 'lycee'],
+  '1ere':    ['lycee', 'expert'],
+  terminale: ['lycee', 'expert'],
+  expert:    ['primaire', 'college', 'lycee', 'expert'],
+};
+
+export function melangerQuestions(classe?: ClasseQuiz): QuestionQuiz[] {
+  const niveaux = classe ? classeVersNiveaux[classe] : ['primaire', 'college', 'lycee', 'expert'] as NiveauQuiz[];
   const filtrees = questionsQuiz.filter((q) => niveaux.includes(q.niveau));
 
   const copie = [...filtrees];

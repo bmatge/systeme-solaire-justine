@@ -12,7 +12,7 @@ const etatInitial: EtatQuiz = {
   montrerReponse: false,
   questionsParJoueur: 5,
   questionsRepondues: 0,
-  niveau: 'college',
+  classe: 'cm2',
 };
 
 function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
@@ -30,15 +30,15 @@ function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
         joueurs: state.joueurs.filter((_, i) => i !== action.index),
       };
 
-    case 'SET_NIVEAU':
-      return { ...state, niveau: action.niveau };
+    case 'SET_CLASSE':
+      return { ...state, classe: action.classe };
 
     case 'COMMENCER':
       if (state.joueurs.length === 0) return state;
       return {
         ...state,
         phase: 'en-cours',
-        questions: melangerQuestions(state.niveau),
+        questions: melangerQuestions(state.classe),
         questionActuelle: 0,
         joueurActuel: 0,
         reponseChoisie: null,

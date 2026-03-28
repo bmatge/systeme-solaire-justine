@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { EtatQuiz, QuizAction, NiveauQuiz } from '../../types';
+import type { EtatQuiz, QuizAction, ClasseQuiz } from '../../types';
 
 interface Props {
   state: EtatQuiz;
@@ -26,31 +26,37 @@ export default function QuizSetup({ state, dispatch }: Props) {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Quiz du Système Solaire</h2>
           <p className="text-white/50 text-sm">
-            Ajoutez les joueurs puis lancez le quiz !
+            Choisis ta classe, ajoute les joueurs et lance le quiz !
           </p>
         </div>
 
-        {/* Level selector */}
-        <div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">
-            Niveau
+        {/* Class selector */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+            Classe
           </h3>
-          <div className="grid grid-cols-2 gap-2">
-            {niveaux.map((n) => (
-              <button
-                key={n.id}
-                onClick={() => dispatch({ type: 'SET_NIVEAU', niveau: n.id })}
-                className={`p-3 rounded-xl border text-left transition-all ${
-                  state.niveau === n.id
-                    ? 'bg-blue-500/20 border-blue-500/50'
-                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                }`}
-              >
-                <div className="text-sm font-medium">{n.label}</div>
-                <div className="text-[10px] text-white/40 mt-0.5">{n.description}</div>
-              </button>
-            ))}
-          </div>
+          {cycles.map((cycle) => (
+            <div key={cycle.nom}>
+              <div className="text-[11px] text-white/30 font-medium mb-1.5 uppercase tracking-wider">
+                {cycle.nom}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {cycle.classes.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => dispatch({ type: 'SET_CLASSE', classe: c.id })}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      state.classe === c.id
+                        ? 'bg-blue-500 text-white shadow-md'
+                        : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80'
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Add player */}
@@ -128,9 +134,43 @@ function couleurJoueur(index: number): string {
 
 export { couleurJoueur };
 
-const niveaux: { id: NiveauQuiz; label: string; description: string }[] = [
-  { id: 'primaire', label: 'Primaire', description: 'CP, CE1, CE2, CM1, CM2' },
-  { id: 'college', label: 'Collège', description: '6ème, 5ème, 4ème, 3ème' },
-  { id: 'lycee', label: 'Lycée', description: '2nde, 1ère, Terminale' },
-  { id: 'expert', label: 'Expert', description: 'Pour les vrais passionnés d\'astronomie' },
+interface ClasseInfo {
+  id: ClasseQuiz;
+  label: string;
+}
+
+const cycles: { nom: string; classes: ClasseInfo[] }[] = [
+  {
+    nom: 'Primaire',
+    classes: [
+      { id: 'cp', label: 'CP' },
+      { id: 'ce1', label: 'CE1' },
+      { id: 'ce2', label: 'CE2' },
+      { id: 'cm1', label: 'CM1' },
+      { id: 'cm2', label: 'CM2' },
+    ],
+  },
+  {
+    nom: 'Collège',
+    classes: [
+      { id: '6eme', label: '6ème' },
+      { id: '5eme', label: '5ème' },
+      { id: '4eme', label: '4ème' },
+      { id: '3eme', label: '3ème' },
+    ],
+  },
+  {
+    nom: 'Lycée',
+    classes: [
+      { id: '2nde', label: '2nde' },
+      { id: '1ere', label: '1ère' },
+      { id: 'terminale', label: 'Terminale' },
+    ],
+  },
+  {
+    nom: 'Hors programme',
+    classes: [
+      { id: 'expert', label: 'Expert' },
+    ],
+  },
 ];

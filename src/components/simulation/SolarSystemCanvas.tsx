@@ -4,7 +4,7 @@ import { useAnimationLoop } from '../../hooks/useAnimationLoop';
 import { corpsCelestes } from '../../data/celestialBodies';
 import { calculerPositionAbsolue } from '../../utils/orbitalMechanics';
 import { auVersPixels, rayonAffichageCorps } from '../../utils/scaleUtils';
-import type { CorpsCeleste } from '../../types';
+import type { CorpsCeleste, SimulationState } from '../../types';
 
 interface CorpsRendu {
   corps: CorpsCeleste;
@@ -65,6 +65,9 @@ export default function SolarSystemCanvas() {
     drawStars(ctx, displayW, displayH);
 
     const corpsRendus: CorpsRendu[] = [];
+
+    // Draw asteroid belt
+    drawAsteroidBelt(ctx, s, displayW, displayH);
 
     // Draw orbits by sampling points along the true elliptical path
     for (const corps of corpsCelestes) {
@@ -362,6 +365,63 @@ function lightenColor(hex: string, amount: number): string {
   const g = Math.min(255, ((num >> 8) & 0xff) + amount);
   const b = Math.min(255, (num & 0xff) + amount);
   return `rgb(${r}, ${g}, ${b})`;
+}
+
+// Asteroid belt: pre-generated rocks between 2.1 and 3.3 AU
+interface Asteroide {
+  distance: number;  // AU from Sun
+  angle0: number;    // initial angle
+  periode: number;   // orbital period in days (varies with distance)
+  taille: number;    // display size 0-1
+  luminosite: number;
+}
+
+let asteroidesCache: Asteroide[] | null = null;
+
+function genererAsteroides(): Asteroide[] {
+  const rng = mulberry32(1337);
+  const count = 300;
+  const result: Asteroide[] = [];
+  for (let i = 0; i < count; i++) {
+    const distance = 2.1 + rng() * 1.2; // 2.1 to 3.3 AU
+    // Kepler's 3rd law: T² ∝ a³ → T = 365.25 * a^1.5
+    const periode = 365.25 * Math.pow(distance, 1.5);
+    result.push({
+      distance,
+      angle0: rng() * Math.PI * 2,
+      periode,
+      taille: rng() * 0.8 + 0.2,
+      luminosite: rng() * 0.3 + 0.08,
+    });
+  }
+  return result;
+}
+
+function drawAsteroidBelt(
+  ctx: CanvasRenderingContext2D,
+  s: SimulationState,
+  displayW: number,
+  displayH: number
+) {
+  if (!asteroidesCache) {
+    asteroidesCache = genererAsteroides();
+  }
+
+  for (const a of asteroidesCache) {
+    const angle = a.angle0 + (2 * Math.PI * s.tempsSimulation) / a.periode;
+    const xAU = a.distance * Math.cos(angle);
+    const yAU = a.distance * Math.sin(angle);
+    const pt = auVersPixels(xAU, yAU, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
+
+    // Skip if off-screen
+    if (pt.x < -10 || pt.x > displayW + 10 || pt.y < -10 || pt.y > displayH + 10) continue;
+
+    const r = Math.max(0.5, a.taille * 1.5 * Math.min(s.zoom, 2));
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(180, 160, 130, ${a.luminosite})`;
+    ctx.fill();
+  }
 }
 
 function drawScale(

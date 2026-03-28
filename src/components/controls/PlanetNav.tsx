@@ -40,7 +40,7 @@ export default function PlanetNav() {
   );
 
   return (
-    <div className="absolute top-16 left-4 z-10">
+    <div className="absolute top-[calc(4rem+env(safe-area-inset-top,0px))] left-4 z-10">
       {/* Toggle button */}
       <button
         onClick={() => setOuvert(!ouvert)}

@@ -129,8 +129,8 @@ function couleurJoueur(index: number): string {
 export { couleurJoueur };
 
 const niveaux: { id: NiveauQuiz; label: string; description: string }[] = [
-  { id: 'primaire', label: 'Primaire', description: 'Questions simples pour les plus jeunes' },
-  { id: 'college', label: 'Collège', description: 'Culture générale sur le système solaire' },
-  { id: 'lycee', label: 'Lycée', description: 'Notions scientifiques plus précises' },
+  { id: 'primaire', label: 'Primaire', description: 'CP, CE1, CE2, CM1, CM2' },
+  { id: 'college', label: 'Collège', description: '6ème, 5ème, 4ème, 3ème' },
+  { id: 'lycee', label: 'Lycée', description: '2nde, 1ère, Terminale' },
   { id: 'expert', label: 'Expert', description: 'Pour les vrais passionnés d\'astronomie' },
 ];

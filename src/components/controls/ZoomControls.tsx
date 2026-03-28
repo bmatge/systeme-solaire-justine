@@ -3,8 +3,8 @@ import { useSimulation } from '../../context/SimulationContext';
 export default function ZoomControls() {
   const { state, dispatch } = useSimulation();
 
-  const zoomIn = () => dispatch({ type: 'SET_ZOOM', zoom: state.zoom * 1.3 });
-  const zoomOut = () => dispatch({ type: 'SET_ZOOM', zoom: state.zoom / 1.3 });
+  const zoomIn = () => dispatch({ type: 'SET_ZOOM', zoom: state.zoom * 1.15 });
+  const zoomOut = () => dispatch({ type: 'SET_ZOOM', zoom: state.zoom / 1.15 });
   const recenter = () => dispatch({ type: 'SET_CENTRE_VUE', centre: { x: 0, y: 0 } });
 
   return (

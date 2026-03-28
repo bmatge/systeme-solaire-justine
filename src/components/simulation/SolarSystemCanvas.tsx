@@ -289,7 +289,7 @@ export default function SolarSystemCanvas() {
     (e: React.WheelEvent) => {
       e.preventDefault();
       const s = stateRef.current;
-      const factor = e.deltaY > 0 ? 0.9 : 1.1;
+      const factor = e.deltaY > 0 ? 0.93 : 1.07;
       dispatch({ type: 'SET_ZOOM', zoom: s.zoom * factor });
     },
     [dispatch]
@@ -310,9 +310,11 @@ export default function SolarSystemCanvas() {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.hypot(dx, dy);
-        const scale = dist / pinchDistRef.current;
+        const rawScale = dist / pinchDistRef.current;
+        // Amortir le pinch : réduire l'amplitude du facteur de zoom
+        const dampened = 1 + (rawScale - 1) * 0.4;
         const s = stateRef.current;
-        dispatch({ type: 'SET_ZOOM', zoom: s.zoom * scale });
+        dispatch({ type: 'SET_ZOOM', zoom: s.zoom * dampened });
         pinchDistRef.current = dist;
       }
     },

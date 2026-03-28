@@ -12,7 +12,7 @@ const etatInitial: EtatQuiz = {
   montrerReponse: false,
   questionsParJoueur: 5,
   questionsRepondues: 0,
-  classe: 'cm2',
+  niveau: 'primaire',
 };
 
 function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
@@ -21,7 +21,7 @@ function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
       if (state.joueurs.length >= 6) return state;
       return {
         ...state,
-        joueurs: [...state.joueurs, { nom: action.nom, score: 0, classe: state.classe }],
+        joueurs: [...state.joueurs, { nom: action.nom, score: 0, niveau: state.niveau }],
       };
 
     case 'RETIRER_JOUEUR':
@@ -30,12 +30,16 @@ function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
         joueurs: state.joueurs.filter((_, i) => i !== action.index),
       };
 
-    case 'SET_CLASSE':
-      return { ...state, classe: action.classe };
+    case 'SET_NIVEAU':
+      return {
+        ...state,
+        niveau: action.niveau,
+        joueurs: state.joueurs.map((j) => ({ ...j, niveau: action.niveau })),
+      };
 
-    case 'SET_CLASSE_JOUEUR': {
+    case 'SET_NIVEAU_JOUEUR': {
       const joueursMaj = [...state.joueurs];
-      joueursMaj[action.index] = { ...joueursMaj[action.index], classe: action.classe };
+      joueursMaj[action.index] = { ...joueursMaj[action.index], niveau: action.niveau };
       return { ...state, joueurs: joueursMaj };
     }
 

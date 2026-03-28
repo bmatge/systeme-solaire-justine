@@ -8,7 +8,7 @@ export default function ZoomControls() {
   const recenter = () => dispatch({ type: 'SET_CENTRE_VUE', centre: { x: 0, y: 0 } });
 
   return (
-    <div className="absolute bottom-24 right-4 flex flex-col gap-2">
+    <div className="absolute bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] right-4 flex flex-col gap-2">
       <button
         onClick={zoomIn}
         className="w-10 h-10 rounded-xl bg-gray-900/90 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-gray-800/90 transition-colors shadow-xl text-lg font-light"

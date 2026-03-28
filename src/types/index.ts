@@ -54,12 +54,6 @@ export type SimulationAction =
 
 export type NiveauQuiz = 'primaire' | 'college' | 'lycee' | 'expert';
 
-export type ClasseQuiz =
-  | 'cp' | 'ce1' | 'ce2' | 'cm1' | 'cm2'
-  | '6eme' | '5eme' | '4eme' | '3eme'
-  | '2nde' | '1ere' | 'terminale'
-  | 'expert';
-
 export interface QuestionQuiz {
   id: number;
   question: string;
@@ -73,7 +67,7 @@ export interface QuestionQuiz {
 export interface Joueur {
   nom: string;
   score: number;
-  classe: ClasseQuiz;
+  niveau: NiveauQuiz;
 }
 
 export type PhaseQuiz = 'configuration' | 'en-cours' | 'resultats';
@@ -88,14 +82,14 @@ export interface EtatQuiz {
   montrerReponse: boolean;
   questionsParJoueur: number;
   questionsRepondues: number;
-  classe: ClasseQuiz;
+  niveau: NiveauQuiz;
 }
 
 export type QuizAction =
   | { type: 'AJOUTER_JOUEUR'; nom: string }
   | { type: 'RETIRER_JOUEUR'; index: number }
-  | { type: 'SET_CLASSE'; classe: ClasseQuiz }
-  | { type: 'SET_CLASSE_JOUEUR'; index: number; classe: ClasseQuiz }
+  | { type: 'SET_NIVEAU'; niveau: NiveauQuiz }
+  | { type: 'SET_NIVEAU_JOUEUR'; index: number; niveau: NiveauQuiz }
   | { type: 'COMMENCER' }
   | { type: 'REPONDRE'; index: number }
   | { type: 'QUESTION_SUIVANTE' }

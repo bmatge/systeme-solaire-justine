@@ -18,7 +18,7 @@ export default function TimeControls() {
   const joursRestants = Math.floor(joursEcoules % 365.25);
 
   return (
-    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-3 shadow-xl border border-white/10 max-w-[95vw]">
+    <div className="absolute bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm rounded-2xl px-3 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-3 shadow-xl border border-white/10 max-w-[95vw] z-[30]">
       {/* Play/Pause */}
       <button
         onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })}

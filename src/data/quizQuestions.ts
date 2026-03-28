@@ -422,26 +422,6 @@ export const questionsQuiz: QuestionQuiz[] = [
   },
 ];
 
-import type { ClasseQuiz } from '../types';
-
-// Mapping classe → niveaux de questions inclus
-// Plus la classe est élevée, plus on inclut de niveaux
-const classeVersNiveaux: Record<ClasseQuiz, NiveauQuiz[]> = {
-  cp:        ['primaire'],
-  ce1:       ['primaire'],
-  ce2:       ['primaire'],
-  cm1:       ['primaire'],
-  cm2:       ['primaire', 'college'],
-  '6eme':    ['primaire', 'college'],
-  '5eme':    ['primaire', 'college'],
-  '4eme':    ['college', 'lycee'],
-  '3eme':    ['college', 'lycee'],
-  '2nde':    ['college', 'lycee'],
-  '1ere':    ['lycee', 'expert'],
-  terminale: ['lycee', 'expert'],
-  expert:    ['primaire', 'college', 'lycee', 'expert'],
-};
-
 function shuffle(arr: QuestionQuiz[]): QuestionQuiz[] {
   const copie = [...arr];
   for (let i = copie.length - 1; i > 0; i--) {
@@ -451,44 +431,39 @@ function shuffle(arr: QuestionQuiz[]): QuestionQuiz[] {
   return copie;
 }
 
-export function melangerQuestions(classe?: ClasseQuiz): QuestionQuiz[] {
-  const niveaux = classe ? classeVersNiveaux[classe] : ['primaire', 'college', 'lycee', 'expert'] as NiveauQuiz[];
-  const filtrees = questionsQuiz.filter((q) => niveaux.includes(q.niveau));
+function questionsParNiveau(niveau: NiveauQuiz): QuestionQuiz[] {
+  const filtrees = questionsQuiz.filter((q) => q.niveau === niveau);
   return shuffle(filtrees);
 }
 
 /**
  * Génère une liste de questions entrelacées selon le niveau de chaque joueur.
- * L'ordre des questions correspond à la rotation des joueurs :
  * question[0] → joueur 0, question[1] → joueur 1, etc.
  */
 export function melangerQuestionsParJoueur(
-  joueurs: { classe: ClasseQuiz }[],
+  joueurs: { niveau: NiveauQuiz }[],
   questionsParJoueur: number,
 ): QuestionQuiz[] {
-  // Construire un pool mélangé par classe (partagé si même classe)
-  const poolParClasse = new Map<ClasseQuiz, QuestionQuiz[]>();
+  const poolParNiveau = new Map<NiveauQuiz, QuestionQuiz[]>();
   for (const joueur of joueurs) {
-    if (!poolParClasse.has(joueur.classe)) {
-      poolParClasse.set(joueur.classe, melangerQuestions(joueur.classe));
+    if (!poolParNiveau.has(joueur.niveau)) {
+      poolParNiveau.set(joueur.niveau, questionsParNiveau(joueur.niveau));
     }
   }
 
-  // Index de consommation par classe
-  const indexParClasse = new Map<ClasseQuiz, number>();
-  for (const classe of poolParClasse.keys()) {
-    indexParClasse.set(classe, 0);
+  const indexParNiveau = new Map<NiveauQuiz, number>();
+  for (const niveau of poolParNiveau.keys()) {
+    indexParNiveau.set(niveau, 0);
   }
 
-  // Entrelacer : pour chaque tour, une question par joueur
   const result: QuestionQuiz[] = [];
   for (let tour = 0; tour < questionsParJoueur; tour++) {
     for (const joueur of joueurs) {
-      const pool = poolParClasse.get(joueur.classe)!;
-      const idx = indexParClasse.get(joueur.classe)!;
+      const pool = poolParNiveau.get(joueur.niveau)!;
+      const idx = indexParNiveau.get(joueur.niveau)!;
       if (idx < pool.length) {
         result.push(pool[idx]);
-        indexParClasse.set(joueur.classe, idx + 1);
+        indexParNiveau.set(joueur.niveau, idx + 1);
       }
     }
   }

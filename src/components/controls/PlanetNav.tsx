@@ -52,7 +52,7 @@ export default function PlanetNav() {
             }`}
           >
             <span
-              className="w-3 h-3 rounded-full shrink-0"
+              className={`w-3 h-3 shrink-0 ${corps.type === 'ceinture' ? 'rounded-sm border border-white/20' : 'rounded-full'}`}
               style={{ backgroundColor: corps.couleur }}
             />
             <span>{corps.nom}</span>

@@ -231,6 +231,16 @@ export default function SolarSystemCanvas() {
         }
       }
 
+      // Check asteroid belt click if no body was hit
+      if (!closest && beltHitRef.current) {
+        const belt = beltHitRef.current;
+        const distFromSun = Math.hypot(x - belt.cx, y - belt.cy);
+        if (distFromSun >= belt.innerR - 10 && distFromSun <= belt.outerR + 10) {
+          dispatch({ type: 'SELECTIONNER_CORPS', id: 'ceinture-asteroides' });
+          return;
+        }
+      }
+
       dispatch({ type: 'SELECTIONNER_CORPS', id: closest?.corps.id ?? null });
     },
     [dispatch]

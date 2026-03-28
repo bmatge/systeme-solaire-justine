@@ -1,8 +1,9 @@
 {
-  "name": "Systeme Solaire",
-  "short_name": "Solaire",
+  "name": "💫JujuDesPlanetes",
+  "short_name": "💫JujuDesPlanetes",
   "description": "Explorez le systeme solaire et testez vos connaissances avec le quiz !",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#030712",
   "theme_color": "#1e3a5f",

@@ -442,14 +442,56 @@ const classeVersNiveaux: Record<ClasseQuiz, NiveauQuiz[]> = {
   expert:    ['primaire', 'college', 'lycee', 'expert'],
 };
 
-export function melangerQuestions(classe?: ClasseQuiz): QuestionQuiz[] {
-  const niveaux = classe ? classeVersNiveaux[classe] : ['primaire', 'college', 'lycee', 'expert'] as NiveauQuiz[];
-  const filtrees = questionsQuiz.filter((q) => niveaux.includes(q.niveau));
-
-  const copie = [...filtrees];
+function shuffle(arr: QuestionQuiz[]): QuestionQuiz[] {
+  const copie = [...arr];
   for (let i = copie.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copie[i], copie[j]] = [copie[j], copie[i]];
   }
   return copie;
+}
+
+export function melangerQuestions(classe?: ClasseQuiz): QuestionQuiz[] {
+  const niveaux = classe ? classeVersNiveaux[classe] : ['primaire', 'college', 'lycee', 'expert'] as NiveauQuiz[];
+  const filtrees = questionsQuiz.filter((q) => niveaux.includes(q.niveau));
+  return shuffle(filtrees);
+}
+
+/**
+ * Génère une liste de questions entrelacées selon le niveau de chaque joueur.
+ * L'ordre des questions correspond à la rotation des joueurs :
+ * question[0] → joueur 0, question[1] → joueur 1, etc.
+ */
+export function melangerQuestionsParJoueur(
+  joueurs: { classe: ClasseQuiz }[],
+  questionsParJoueur: number,
+): QuestionQuiz[] {
+  // Construire un pool mélangé par classe (partagé si même classe)
+  const poolParClasse = new Map<ClasseQuiz, QuestionQuiz[]>();
+  for (const joueur of joueurs) {
+    if (!poolParClasse.has(joueur.classe)) {
+      poolParClasse.set(joueur.classe, melangerQuestions(joueur.classe));
+    }
+  }
+
+  // Index de consommation par classe
+  const indexParClasse = new Map<ClasseQuiz, number>();
+  for (const classe of poolParClasse.keys()) {
+    indexParClasse.set(classe, 0);
+  }
+
+  // Entrelacer : pour chaque tour, une question par joueur
+  const result: QuestionQuiz[] = [];
+  for (let tour = 0; tour < questionsParJoueur; tour++) {
+    for (const joueur of joueurs) {
+      const pool = poolParClasse.get(joueur.classe)!;
+      const idx = indexParClasse.get(joueur.classe)!;
+      if (idx < pool.length) {
+        result.push(pool[idx]);
+        indexParClasse.set(joueur.classe, idx + 1);
+      }
+    }
+  }
+
+  return result;
 }

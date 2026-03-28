@@ -73,6 +73,7 @@ export interface QuestionQuiz {
 export interface Joueur {
   nom: string;
   score: number;
+  classe: ClasseQuiz;
 }
 
 export type PhaseQuiz = 'configuration' | 'en-cours' | 'resultats';
@@ -94,6 +95,7 @@ export type QuizAction =
   | { type: 'AJOUTER_JOUEUR'; nom: string }
   | { type: 'RETIRER_JOUEUR'; index: number }
   | { type: 'SET_CLASSE'; classe: ClasseQuiz }
+  | { type: 'SET_CLASSE_JOUEUR'; index: number; classe: ClasseQuiz }
   | { type: 'COMMENCER' }
   | { type: 'REPONDRE'; index: number }
   | { type: 'QUESTION_SUIVANTE' }

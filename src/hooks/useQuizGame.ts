@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import type { EtatQuiz, QuizAction } from '../types';
-import { melangerQuestions } from '../data/quizQuestions';
+import { melangerQuestionsParJoueur } from '../data/quizQuestions';
 
 const etatInitial: EtatQuiz = {
   joueurs: [],
@@ -21,7 +21,7 @@ function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
       if (state.joueurs.length >= 6) return state;
       return {
         ...state,
-        joueurs: [...state.joueurs, { nom: action.nom, score: 0 }],
+        joueurs: [...state.joueurs, { nom: action.nom, score: 0, classe: state.classe }],
       };
 
     case 'RETIRER_JOUEUR':
@@ -33,12 +33,18 @@ function reducer(state: EtatQuiz, action: QuizAction): EtatQuiz {
     case 'SET_CLASSE':
       return { ...state, classe: action.classe };
 
+    case 'SET_CLASSE_JOUEUR': {
+      const joueursMaj = [...state.joueurs];
+      joueursMaj[action.index] = { ...joueursMaj[action.index], classe: action.classe };
+      return { ...state, joueurs: joueursMaj };
+    }
+
     case 'COMMENCER':
       if (state.joueurs.length === 0) return state;
       return {
         ...state,
         phase: 'en-cours',
-        questions: melangerQuestions(state.classe),
+        questions: melangerQuestionsParJoueur(state.joueurs, state.questionsParJoueur),
         questionActuelle: 0,
         joueurActuel: 0,
         reponseChoisie: null,

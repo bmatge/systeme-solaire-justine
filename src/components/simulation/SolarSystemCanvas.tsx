@@ -20,6 +20,7 @@ export default function SolarSystemCanvas() {
   stateRef.current = state;
 
   const corpsRendusRef = useRef<CorpsRendu[]>([]);
+  const beltHitRef = useRef<{ cx: number; cy: number; innerR: number; outerR: number } | null>(null);
   const isDraggingRef = useRef(false);
   const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
   const pinchDistRef = useRef<number | null>(null);
@@ -67,12 +68,13 @@ export default function SolarSystemCanvas() {
     const corpsRendus: CorpsRendu[] = [];
 
     // Draw asteroid belt
-    drawAsteroidBelt(ctx, s, displayW, displayH);
+    beltHitRef.current = drawAsteroidBelt(ctx, s, displayW, displayH);
 
     // Draw orbits by sampling points along the true elliptical path
     for (const corps of corpsCelestes) {
       if (!corps.orbite) continue;
       if (corps.type === 'satellite') continue;
+      if (corps.type === 'ceinture') continue;
 
       const parentPos = corps.parent
         ? calculerPositionAbsolue(
@@ -102,6 +104,8 @@ export default function SolarSystemCanvas() {
 
     // Draw bodies
     for (const corps of corpsCelestes) {
+      // Skip asteroid belt from normal body rendering
+      if (corps.type === 'ceinture') continue;
       // In compact mode, skip the moon unless zoomed in
       if (corps.type === 'satellite' && s.modeAffichage === 'compact' && s.zoom < 3) continue;
 
@@ -380,31 +384,54 @@ let asteroidesCache: Asteroide[] | null = null;
 
 function genererAsteroides(): Asteroide[] {
   const rng = mulberry32(1337);
-  const count = 300;
+  const count = 500;
   const result: Asteroide[] = [];
   for (let i = 0; i < count; i++) {
-    const distance = 2.1 + rng() * 1.2; // 2.1 to 3.3 AU
-    // Kepler's 3rd law: T² ∝ a³ → T = 365.25 * a^1.5
+    // Gaussian-ish distribution centered around 2.7 AU
+    const u1 = rng(), u2 = rng();
+    const gauss = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const distance = Math.max(2.06, Math.min(3.35, 2.7 + gauss * 0.35));
     const periode = 365.25 * Math.pow(distance, 1.5);
     result.push({
       distance,
       angle0: rng() * Math.PI * 2,
       periode,
-      taille: rng() * 0.8 + 0.2,
-      luminosite: rng() * 0.3 + 0.08,
+      taille: rng() * 0.9 + 0.3,
+      luminosite: rng() * 0.4 + 0.15,
     });
   }
   return result;
 }
 
+// Returns { innerRadius, outerRadius, cx, cy } in screen coords for hit-testing
 function drawAsteroidBelt(
   ctx: CanvasRenderingContext2D,
   s: SimulationState,
   displayW: number,
   displayH: number
-) {
+): { cx: number; cy: number; innerR: number; outerR: number } | null {
   if (!asteroidesCache) {
     asteroidesCache = genererAsteroides();
+  }
+
+  // Compute belt screen radii for hit-testing
+  const sunScreen = auVersPixels(0, 0, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
+  const innerPt = auVersPixels(2.1, 0, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
+  const outerPt = auVersPixels(3.3, 0, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
+  const innerR = Math.abs(innerPt.x - sunScreen.x);
+  const outerR = Math.abs(outerPt.x - sunScreen.x);
+
+  const isSelected = s.corpsSelectionne === 'ceinture-asteroides';
+
+  // Draw a subtle band behind the asteroids
+  if (outerR > 5) {
+    ctx.beginPath();
+    ctx.arc(sunScreen.x, sunScreen.y, (innerR + outerR) / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = isSelected
+      ? 'rgba(200, 180, 140, 0.12)'
+      : 'rgba(200, 180, 140, 0.04)';
+    ctx.lineWidth = Math.max(2, outerR - innerR);
+    ctx.stroke();
   }
 
   for (const a of asteroidesCache) {
@@ -413,15 +440,43 @@ function drawAsteroidBelt(
     const yAU = a.distance * Math.sin(angle);
     const pt = auVersPixels(xAU, yAU, s.modeAffichage, s.zoom, s.centreVue, displayW, displayH);
 
-    // Skip if off-screen
     if (pt.x < -10 || pt.x > displayW + 10 || pt.y < -10 || pt.y > displayH + 10) continue;
 
-    const r = Math.max(0.5, a.taille * 1.5 * Math.min(s.zoom, 2));
+    const r = Math.max(0.8, a.taille * 2.2 * Math.min(s.zoom, 3));
     ctx.beginPath();
     ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(180, 160, 130, ${a.luminosite})`;
+    const alpha = isSelected ? a.luminosite * 1.8 : a.luminosite;
+    ctx.fillStyle = `rgba(200, 180, 140, ${alpha})`;
     ctx.fill();
   }
+
+  // Draw label at top of belt
+  if (outerR > 30) {
+    const labelAngle = -Math.PI / 2;
+    const labelR = (innerR + outerR) / 2;
+    const lx = sunScreen.x + labelR * Math.cos(labelAngle);
+    const ly = sunScreen.y + labelR * Math.sin(labelAngle);
+    ctx.font = '10px -apple-system, sans-serif';
+    ctx.fillStyle = isSelected ? 'rgba(200, 180, 140, 0.7)' : 'rgba(200, 180, 140, 0.35)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ceinture d\'astéroïdes', lx, ly);
+  }
+
+  // Selection ring
+  if (isSelected && outerR > 5) {
+    ctx.beginPath();
+    ctx.arc(sunScreen.x, sunScreen.y, outerR + 3, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 6]);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(sunScreen.x, sunScreen.y, innerR - 3, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  return { cx: sunScreen.x, cy: sunScreen.y, innerR, outerR };
 }
 
 function drawScale(

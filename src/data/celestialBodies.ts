@@ -185,6 +185,38 @@ export const corpsCelestes: CorpsCeleste[] = [
     ],
   },
   {
+    id: 'ceinture-asteroides',
+    nom: 'Ceinture d\'astéroïdes',
+    type: 'ceinture',
+    parent: 'soleil',
+    orbite: {
+      demiGrandAxe: 2.7,
+      excentricite: 0,
+      periodeOrbitale: 1621,
+      phaseInitiale: 0,
+    },
+    physique: {
+      rayon: 0,
+      masse: '3,0 × 10²¹ kg (environ 4% de la masse de la Lune)',
+      densite: 2.0,
+      gravite: 0,
+      temperature: -73,
+    },
+    couleur: '#B4A082',
+    rayonAffichage: 0,
+    description:
+      "La ceinture d'astéroïdes est une région du système solaire située entre les orbites de Mars et Jupiter, entre 2,1 et 3,3 UA du Soleil. Elle contient des millions d'objets rocheux de tailles variées.",
+    composition:
+      "Roches silicatées, métaux (fer, nickel), et pour certains de la glace d'eau. Les astéroïdes de type C (carbonés) sont les plus courants.",
+    curiosites: [
+      "Cérès, le plus gros objet de la ceinture (950 km de diamètre), est classé comme planète naine.",
+      "La masse totale de la ceinture ne représente que 4% de celle de la Lune.",
+      "Malgré les films, les astéroïdes sont très espacés : en moyenne 1 million de km entre chacun.",
+      "La ceinture existe car la gravité de Jupiter a empêché une planète de se former à cet endroit.",
+      "On estime qu'elle contient entre 1,1 et 1,9 million d'astéroïdes de plus d'1 km de diamètre.",
+    ],
+  },
+  {
     id: 'jupiter',
     nom: 'Jupiter',
     type: 'planete',

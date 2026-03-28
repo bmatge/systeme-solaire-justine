@@ -6,6 +6,7 @@ const typeLabels: Record<string, string> = {
   planete: 'Planète',
   'planete-naine': 'Planète naine',
   satellite: 'Satellite naturel',
+  ceinture: 'Ceinture d\'astéroïdes',
 };
 
 export default function BodyDetailPanel() {
@@ -55,17 +56,25 @@ export default function BodyDetailPanel() {
             Caractéristiques physiques
           </h3>
           <div className="grid grid-cols-2 gap-2">
-            <InfoCard label="Rayon" value={formatRayon(corps.physique.rayon)} />
+            {corps.physique.rayon > 0 && (
+              <InfoCard label="Rayon" value={formatRayon(corps.physique.rayon)} />
+            )}
             <InfoCard label="Masse" value={corps.physique.masse} />
-            <InfoCard label="Densité" value={`${corps.physique.densite} g/cm³`} />
-            <InfoCard label="Gravité" value={`${corps.physique.gravite} m/s²`} />
+            {corps.physique.densite > 0 && (
+              <InfoCard label="Densité" value={`${corps.physique.densite} g/cm³`} />
+            )}
+            {corps.physique.gravite > 0 && (
+              <InfoCard label="Gravité" value={`${corps.physique.gravite} m/s²`} />
+            )}
             <InfoCard label="Température" value={`${corps.physique.temperature}°C`} />
-            {corps.orbite && (
+            {corps.orbite && corps.type === 'ceinture' ? (
+              <InfoCard label="Étendue" value="2,1 à 3,3 UA du Soleil" />
+            ) : corps.orbite ? (
               <>
                 <InfoCard label="Distance au Soleil" value={`${corps.orbite.demiGrandAxe} UA`} />
                 <InfoCard label="Période orbitale" value={formatPeriode(corps.orbite.periodeOrbitale)} />
               </>
-            )}
+            ) : null}
           </div>
         </div>
 

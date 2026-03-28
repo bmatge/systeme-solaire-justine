@@ -16,7 +16,7 @@ export interface PhysiqueParams {
 export interface CorpsCeleste {
   id: string;
   nom: string;
-  type: 'etoile' | 'planete' | 'planete-naine' | 'satellite';
+  type: 'etoile' | 'planete' | 'planete-naine' | 'satellite' | 'ceinture';
   parent?: string;            // Parent body id
   orbite?: OrbiteParams;
   physique: PhysiqueParams;

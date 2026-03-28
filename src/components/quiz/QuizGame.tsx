@@ -1,5 +1,15 @@
-import type { EtatQuiz, QuizAction } from '../../types';
+import type { EtatQuiz, QuizAction, ClasseQuiz } from '../../types';
 import { couleurJoueur } from './QuizSetup';
+
+const classesLabels: Record<ClasseQuiz, string> = {
+  cp: 'CP', ce1: 'CE1', ce2: 'CE2', cm1: 'CM1', cm2: 'CM2',
+  '6eme': '6ème', '5eme': '5ème', '4eme': '4ème', '3eme': '3ème',
+  '2nde': '2nde', '1ere': '1ère', terminale: 'Terminale', expert: 'Expert',
+};
+
+function classeLabel(classe: ClasseQuiz): string {
+  return classesLabels[classe] ?? classe;
+}
 
 interface Props {
   state: EtatQuiz;
@@ -45,7 +55,10 @@ export default function QuizGame({ state, dispatch }: Props) {
             >
               {j.nom[0].toUpperCase()}
             </div>
-            <span className="font-medium">{j.nom}</span>
+            <div className="flex flex-col">
+              <span className="font-medium">{j.nom}</span>
+              <span className="text-[9px] text-white/30">{classeLabel(j.classe)}</span>
+            </div>
             <span className="text-white/40 ml-1">{j.score}</span>
           </div>
         ))}

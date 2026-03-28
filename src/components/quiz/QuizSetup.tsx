@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { EtatQuiz, QuizAction, ClasseQuiz } from '../../types';
 
 interface Props {
@@ -30,10 +30,10 @@ export default function QuizSetup({ state, dispatch }: Props) {
           </p>
         </div>
 
-        {/* Class selector */}
+        {/* Default class selector */}
         <div className="space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
-            Classe
+            Classe par défaut
           </h3>
           {cycles.map((cycle) => (
             <div key={cycle.nom}>
@@ -88,27 +88,33 @@ export default function QuizSetup({ state, dispatch }: Props) {
             {state.joueurs.map((joueur, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between bg-white/5 rounded-xl px-4 py-3"
+                className="bg-white/5 rounded-xl px-4 py-3 space-y-2"
               >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                    style={{
-                      backgroundColor: couleurJoueur(i),
-                    }}
-                  >
-                    {joueur.nom[0].toUpperCase()}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                      style={{
+                        backgroundColor: couleurJoueur(i),
+                      }}
+                    >
+                      {joueur.nom[0].toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium">{joueur.nom}</span>
                   </div>
-                  <span className="text-sm font-medium">{joueur.nom}</span>
+                  <button
+                    onClick={() => dispatch({ type: 'RETIRER_JOUEUR', index: i })}
+                    className="text-white/30 hover:text-red-400 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-                <button
-                  onClick={() => dispatch({ type: 'RETIRER_JOUEUR', index: i })}
-                  className="text-white/30 hover:text-red-400 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                <ClasseSelector
+                  classeActuelle={joueur.classe}
+                  onChange={(classe) => dispatch({ type: 'SET_CLASSE_JOUEUR', index: i, classe })}
+                />
               </div>
             ))}
           </div>
@@ -123,6 +129,63 @@ export default function QuizSetup({ state, dispatch }: Props) {
           Commencer le quiz
         </button>
       </div>
+    </div>
+  );
+}
+
+function ClasseSelector({ classeActuelle, onChange }: { classeActuelle: ClasseQuiz; onChange: (c: ClasseQuiz) => void }) {
+  const [ouvert, setOuvert] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOuvert(false);
+      }
+    }
+    if (ouvert) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [ouvert]);
+
+  const label = toutesClasses.find((c) => c.id === classeActuelle)?.label ?? classeActuelle;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOuvert(!ouvert)}
+        className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors ml-11"
+      >
+        <span className="bg-white/10 px-2 py-0.5 rounded-md">{label}</span>
+        <svg className={`w-3 h-3 transition-transform ${ouvert ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {ouvert && (
+        <div className="absolute z-10 left-11 mt-1 bg-gray-800 border border-white/10 rounded-xl p-2 shadow-xl min-w-[200px]">
+          {cycles.map((cycle) => (
+            <div key={cycle.nom} className="mb-1.5 last:mb-0">
+              <div className="text-[10px] text-white/30 font-medium uppercase tracking-wider px-2 py-0.5">
+                {cycle.nom}
+              </div>
+              <div className="flex flex-wrap gap-1 px-1">
+                {cycle.classes.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => { onChange(c.id); setOuvert(false); }}
+                    className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                      classeActuelle === c.id
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white/5 text-white/60 hover:bg-white/10'
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -174,3 +237,5 @@ const cycles: { nom: string; classes: ClasseInfo[] }[] = [
     ],
   },
 ];
+
+const toutesClasses: ClasseInfo[] = cycles.flatMap((c) => c.classes);

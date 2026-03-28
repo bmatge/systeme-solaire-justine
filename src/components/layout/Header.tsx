@@ -9,8 +9,9 @@ export default function Header({ mode, onChangeMode }: HeaderProps) {
   return (
     <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 h-12 bg-gray-950/80 backdrop-blur-sm border-b border-white/5">
       <h1 className="text-sm font-semibold tracking-wide">
-        <span className="text-white/90">Système</span>{' '}
-        <span className="text-blue-400">Solaire</span>
+        <span>💫</span>{' '}
+        <span className="text-white/90">JujuDes</span>
+        <span className="text-blue-400">Planetes</span>
       </h1>
 
       <div className="flex bg-white/5 rounded-lg p-0.5">
